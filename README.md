@@ -5,59 +5,56 @@ Group : Lab_3_C
 Date: 2024-03-24
 
 ## Task 0 (optionnal) : Install ImageMagick and Apache on your local machine
-> You can do the development on the server or on your local machine. If you want to
-> develop on your local machine do the following.
->
-> Install ImageMAgick :
->
-> ```bash
+> You can do the development on the server or on your local machine. If you want to develop on your local machine do the following.
+> 
+>Install ImageMAgick :
+> 
+>```bash
 > sudo apt install imagemagick
 > ```
->
-> Install Apache web server :
->
-> ```bash
+> 
+>Install Apache web server :
+> 
+>```bash
 > sudo apt install apache2
 > ```
->
-> To create the same setup as on the remote machine enable the Apache userdir module (files in the directory public_html in your personal directory will be served by the web server):
->
-> ```bash
+> 
+>To create the same setup as on the remote machine enable the Apache `userdir` module (files in the directory `public_html` in your personal directory will be served by the web server):
+> 
+>```bash
 > sudo a2enmod userdir
 > ```
->
-> Finally restart Apache:
->
-> ```bash
+> 
+>Finally restart Apache:
+> 
+>```bash
 > sudo systemctl restart apache2
 > ```
->
-> To be able to access port 80 on the guest VM from your host configure a port
-> forwarding rule in your hypervisor (VirtualBox, VMware). Add a rule to forward, say,
-> port 8080 on your host to port 80 on the guest.
->
+> 
+>To be able to access port 80 on the guest VM from your host configure a port forwarding rule in your hypervisor (VirtualBox, VMware). Add a rule to forward, say, port 8080 on your host to port 80 on the guest.
+> 
 > **Transferring files between local and remote machine**
->
-> To transfer files between your local machine and the remote machine you can use the `scp` (secure copy) command that is part of SSH. scp works like the cp command except that it transfers the files over the network. It uses the SSH protocol and the authentication mechanism of SSH. In practice it means that whenever you can ssh into a machine, you can also copy files to it using `scp` .
-> In theory you could launch scp on your local machine and connect to the remote machine, or run it on the remote machine and connect to your local machine. However, because your local machine is behind a NAT it is not visible from the remote machine. You can connect from the local machine to the remote, but not vice-versa. Therefore, always run scp from your local machine.
-> Running `scp` on your local machine you can copy a file to the remote machine like so:
->
+> 
+>To transfer files between your local machine and the remote machine you can use the `scp` (secure copy) command that is part of SSH. `scp` works like the `cp` command except that it transfers the files over the network. It uses the SSH protocol and the authentication mechanism of SSH. In practice it means that whenever you can `ssh` into a machine, you can also copy files to it using `scp` .
+> In theory you could launch `scp` on your local machine and connect to the remote machine, or run it on the remote machine and connect to your local machine. However, because your local machine is behind a NAT it is not visible from the remote machine. You can connect from the local machine to the remote, but not vice-versa. Therefore, always run scp from your local machine.
+>Running `scp` on your local machine you can copy a file to the remote machine like so:
+> 
 > ```bash
 > scp <path/to/sourcefile> <userid>@<host>:<path/to/destfile>
-> ```
->
+>```
+> 
 > Where
->
-> - `<path/to/sourcefile> is the file on your local machine you want to copy
+> 
+>- `<path/to/sourcefile> is the file on your local machine you want to copy
 > - `<userid>` is your user id on the remote machine
-> - `<host>` is the name of the remote machine
+>- `<host>` is the name of the remote machine
 > - `<path/to/destfile>` is the destination of the file on the remote machine
->
+> 
 > To do the opposite, i.e. copy a file from the remote machine to the local machine:
->
-> ```bash
+> 
+>```bash
 > scp <userid>@<host>:<path/to/srcfile> <path/to/dstfile>
-> ```
+>```
 
 ## Task 1 : Set up web directory
 
