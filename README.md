@@ -63,12 +63,19 @@ Date: 2024-03-24
 >
 > 1. Create the directory public_html. Create a file foo.txt in it and retrieve the file using the browser on your local machine.
 
-// todo
+**Commands : **
 
-> 2. Navigate to the URL http://ads.iict.ch/~albert_einstein/foo.txt. You should see
->    the contents of the file.
+```bash
+labc@ads:~$ mkdir public_html
+labc@ads:~$ cd public_html/
+labc@ads:~/public_html$ nano foo.txt
+```
 
-// todo
+In the file "foo.txt", we just write "test".
+
+> 2. Navigate to the URL http://ads.iict.ch/~albert_einstein/foo.txt. You should see the contents of the file.
+
+![image-20240405192147637](./figures/task1_1.png)
 
 ## Task 2 : Create thunmbnails
 
