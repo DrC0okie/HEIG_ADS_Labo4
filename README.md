@@ -84,7 +84,7 @@ In the file "foo.txt", we just write "test".
 >    By placing the files into your web directory you can inspect them using your
 >    browser.
 
-// todo
+![image-20240405192147637](./figures/task2_1.png)
 
 > 2. Display the dimensions of a few pictures by using ImageMagick's identify command. This command has a powerful feature where one can specify a format string (similar to the printf() format string in C) that specifies the information to print.
 >
@@ -92,9 +92,26 @@ In the file "foo.txt", we just write "test".
 >    identify -format 'width: %w, height: %h' picture.jpg
 >    ```
 
-// todo
+```bash
+labc@ads:~/public_html/lab04_raw_files$ identify -format 'width: %w, height: %h\n' cheseaux.png
+width: 2500, height: 1667
+labc@ads:~/public_html/lab04_raw_files$ identify -format 'width: %w, height: %h\n' cours.jpg
+width: 2500, height: 1667
+labc@ads:~/public_html/lab04_raw_files$ identify -format 'width: %w, height: %h\n' dcim439.jpg
+width: 1200, height: 867
+labc@ads:~/public_html/lab04_raw_files$ identify -format 'width: %w, height: %h\n' img-430.png
+width: 1920, height: 858
+labc@ads:~/public_html/lab04_raw_files$ identify -format 'width: %w, height: %h\n' showroom_fabrik.jpg
+width: 3456, height: 4608
+labc@ads:~/public_html/lab04_raw_files$ identify -format 'width: %w, height: %h\n' st-roch.png
+width: 1200, height: 800
+labc@ads:~/public_html/lab04_raw_files$ identify -format 'width: %w, height: %h\n' yparc.png
+width: 1200, height: 800
+```
 
-> 3. Write a script called show_dimensions that loops through all the picture files and shows for each its name and its dimensions. For the loop use the for .. in .. do .. done control structure.
+Note : To improve readability, we've added a line break at the end of each string format. This has no other impact.
+
+> 3. Write a script called show_dimensions that loops through all the picture files and shows for each its name and its dimensions. For the loop use the for `.. in .. do ..` done control structure.
 >
 >    Assumptions:
 >
@@ -103,12 +120,55 @@ In the file "foo.txt", we just write "test".
 >
 >    **Deliverable: script show_dimensions**
 
-// todo
+**Script "show_dimensions" :**
 
-> 4. Write a script called rename_pictures that produces picture files that have the dimensions in their name. For example if a picture is called building.jpg and has a width of 1024 and a height of 768 pixels the script should create a file building_1024_768.jpg . The script should not modify the original files,
+```bash
+labc@ads:~/public_html$ cat show_dimensions
+#!/bin/bash
+
+# Chemin vers le répertoire contenant les images
+DIRECTORY="./lab04_raw_files"
+
+# Extension des fichiers à traiter
+declare -a EXTENSIONS=("jpg" "jpeg" "png")
+
+# Boucle à travers tous les fichiers dans le répertoire
+for IMAGE in $DIRECTORY/*; do
+    if [[ -f $IMAGE ]]; then
+        # Extraction de l'extension du fichier
+        EXTENSION="${IMAGE##*.}"
+        EXTENSION="${EXTENSION,,}" # Convertir en minuscules pour la comparaison
+
+        # Vérifier si le fichier est une image
+        if [[ " ${EXTENSIONS[@]} " =~ " ${EXTENSION} " ]]; then
+            # Obtention des dimensions de l'image avec 'identify'
+            DIMENSIONS=$(identify -format ' width: %w, height: %h\n'  "$IMAGE")
+            # Affichage du nom du fichier et de ses dimensions
+            echo "$(basename "$IMAGE"): $DIMENSIONS"
+        fi
+    fi
+done
+
+```
+
+**Output :**
+
+```bash
+labc@ads:~/public_html$ bash show_dimensions
+cheseaux.png: width: 2500, height: 1667
+cours.jpg: width: 2500, height: 1667
+dcim439.jpg: width: 1200, height: 867
+img-430.png: width: 1920, height: 858
+mur.jpg: width: 2501, height: 1667
+showroom_fabrik.jpg: width: 3456, height: 4608
+st-roch.png: width: 1200, height: 800
+yparc.png: width: 1200, height: 800
+```
+
+> 4. Write a script called `rename_pictures` that produces picture files that have the dimensions in their name. For example if a picture is called building.jpg and has a width of 1024 and a height of 768 pixels the script should create a file building_1024_768.jpg . The script should not modify the original files,
 >    but create new ones.
 >
->    When you run the script several times how do you prevent the dimensions from accumulating in the name, like building_1024_768_1024_768_1024_768.jpg ? The orginial files can be named anything. They could have the dimensions in the file name accidentally. Change the script and/or the organization of the files so that the dimensions don't accumulate ad infinitum. Put a comment into the script explaining how you did it. Hint: There is a very simple solution. Analyzing the filename is way too complicated.
+>    When you run the script several times how do you prevent the dimensions from accumulating in the name, like `building_1024_768_1024_768_1024_768.jpg` ? The orginal files can be named anything. They could have the dimensions in the file name accidentally. Change the script and/or the organization of the files so that the dimensions don't accumulate ad infinitum. Put a comment into the script explaining how you did it. Hint: There is a very simple solution. Analyzing the filename is way too complicated.
 >
 >    Assumptions: like for the previous script
 >
