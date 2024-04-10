@@ -174,15 +174,62 @@ yparc.png: width: 1200, height: 800
 >
 >    **Deliverable: script rename_pictures**
 
-// todo
+**Output :**
+
+```bash
+labc@ads:~/public_html$ bash rename_pictures
+Fichier créé : ./lab04_raw_files/cheseaux_2500_1667.png
+Fichier créé : ./lab04_raw_files/cours_2500_1667.jpg
+Fichier créé : ./lab04_raw_files/dcim439_1200_867.jpg
+Fichier créé : ./lab04_raw_files/img-430_1920_858.png
+Fichier créé : ./lab04_raw_files/mur_2501_1667.jpg
+Le fichier rapport-activite-2018.pdf est ignoré car son extension n'indique pas une image.
+Le fichier rapport-activite-2019.pdf est ignoré car son extension n'indique pas une image.
+Le fichier rapport-activite-2020.pdf est ignoré car son extension n'indique pas une image.
+Le fichier rapport-annuel-2018.pdf est ignoré car son extension n'indique pas une image.
+Le fichier rapport-annuel-2019.pdf est ignoré car son extension n'indique pas une image.
+Fichier créé : ./lab04_raw_files/showroom_fabrik_3456_4608.jpg
+Fichier créé : ./lab04_raw_files/st-roch_1200_800.png
+Fichier créé : ./lab04_raw_files/yparc_1200_800.png
+labc@ads:~/public_html$ bash rename_pictures
+Le fichier cheseaux_2500_1667.png contient déjà des dimensions dans son nom.
+Fichier créé : ./lab04_raw_files/cheseaux_2500_1667.png
+Le fichier cours_2500_1667.jpg contient déjà des dimensions dans son nom.
+Fichier créé : ./lab04_raw_files/cours_2500_1667.jpg
+Le fichier dcim439_1200_867.jpg contient déjà des dimensions dans son nom.
+Fichier créé : ./lab04_raw_files/dcim439_1200_867.jpg
+Le fichier img-430_1920_858.png contient déjà des dimensions dans son nom.
+Fichier créé : ./lab04_raw_files/img-430_1920_858.png
+Le fichier mur_2501_1667.jpg contient déjà des dimensions dans son nom.
+Fichier créé : ./lab04_raw_files/mur_2501_1667.jpg
+Le fichier rapport-activite-2018.pdf est ignoré car son extension n'indique pas une image.
+Le fichier rapport-activite-2019.pdf est ignoré car son extension n'indique pas une image.
+Le fichier rapport-activite-2020.pdf est ignoré car son extension n'indique pas une image.
+Le fichier rapport-annuel-2018.pdf est ignoré car son extension n'indique pas une image.
+Le fichier rapport-annuel-2019.pdf est ignoré car son extension n'indique pas une image.
+Le fichier showroom_fabrik_3456_4608.jpg contient déjà des dimensions dans son nom.
+Fichier créé : ./lab04_raw_files/showroom_fabrik_3456_4608.jpg
+Le fichier st-roch_1200_800.png contient déjà des dimensions dans son nom.
+Fichier créé : ./lab04_raw_files/st-roch_1200_800.png
+Le fichier yparc_1200_800.png contient déjà des dimensions dans son nom.
+Fichier créé : ./lab04_raw_files/yparc_1200_800.png
+```
 
 > 5. With a few pictures try to create a smaller thumbnail where the largest side is 300 pixels. Use ImageMagick's convert command like so:
 >
->    ```
+>    ```bash
 >    convert -geometry 300 picture.jpg picture_thumb.jpg
 >    ```
 
-// todo
+**Output :**
+
+```bash
+labc@ads:~/public_html/lab04_raw_files$ convert -geometry 300 cheseaux.png cheseaux_thumb.png
+labc@ads:~/public_html/lab04_raw_files$ identify -format 'width: %w, height: %h' cheseaux_thumb.png
+width: 300, height: 200
+```
+
+
 
 > 6. Write a script called make_thumbnails that loops through all the picture files and creates a thumbnail for each. If the picture file is named building.jpg the corresponding thumbnail should be named building_thumb.jpg.
 >
