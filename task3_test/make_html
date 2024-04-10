@@ -17,11 +17,20 @@ if [ $rename_exit_code -ne 0 ]; then
     exit $rename_exit_code
 fi
 
-# Move PDF files from lab04_raw_files to the destination directory
-for pdf in $src_dir/*.pdf; do
+# Copy PDF files from source to destination directory if they don't already exist there
+for pdf in "$src_dir"/*.pdf; do
     [ -e "$pdf" ] || continue  # Skip if no files found
-    echo "Moving $pdf to $res_directory"
-    mv "$pdf" "$res_directory/"
+
+    pdf_filename=$(basename "$pdf")
+    destination_pdf="$res_directory/$pdf_filename"
+
+    if [ -e "$destination_pdf" ]; then
+        echo "$pdf_filename already exists in $res_directory, skipping copy."
+        continue
+    fi
+
+    echo "Copying $pdf to $res_directory"
+    cp "$pdf" "$destination_pdf"
 done
 
 # Create thumbnails for the pictures and pdf files in the "files" directory
