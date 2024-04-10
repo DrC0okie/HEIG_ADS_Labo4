@@ -1,0 +1,13 @@
+#!/bin/bash
+
+raw_dir="lab04_raw_files"
+output_file="page.html"
+template_begin="template_begin.html"
+template_end="template_end.html"
+
+# Check if ImageMagick is installed
+
+if ! command -v convert &> /dev/null; then
+    echo "ImageMagick is not installed. Please install it to continue."
+    exit 1
+fi
