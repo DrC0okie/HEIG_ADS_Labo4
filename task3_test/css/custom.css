@@ -1,0 +1,15 @@
+img.img-partner {
+	width: 150px;
+}
+
+img.img-competencies {
+	width: 64px;
+}
+
+img.img-gray {
+	filter: grayscale(100%);
+}
+
+img.vignette {
+	box-shadow: 1px 1px 6px -2px rgba(0, 0, 0, 0.75);
+}

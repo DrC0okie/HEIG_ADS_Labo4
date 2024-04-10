@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Default directory names
+default_src_dir="lab04_raw_files"
+default_dst_dir=$default_src_dir
+
+# Use the first script argument as the source directory, defaulting to default_src_dir if not provided
+src_dir="${1:-$default_src_dir}"
+
+# Use the second script argument as the destination directory, defaulting to default_dst_dir if not provided
+dst_dir="${2:-$default_dst_dir}"
+
+# Create the destination directory if it doesn't exist
+mkdir -p "$dst_dir"
+
+# Loop through JPEG and PNG files in the source directory to rename them with dimensions
+for img in "$src_dir"/*.{jpg,png}; do
+    [ -e "$img" ] || continue  # Skip if no files found
+    base=$(basename "$img")
+    filename="${base%.*}"
+    extension="${base##*.}"
+
+    # Check for dimensions in the filename
+    if ! [[ "$filename" =~ _[0-9]+x[0-9]+ ]]; then
+        dimensions=$(identify -format '%wx%h' "$img")
+        new_filename="${filename}_${dimensions}.${extension}"
+        target_path="${dst_dir}/${new_filename}"
+
+        # Check if the target file already exists
+        if [ -e "$target_path" ]; then
+            echo "Target file $target_path already exists. Skipping."
+        else
+            cp "$img" "$target_path"
+            echo "Renamed $img to $target_path"
+        fi
+    else
+        echo "Skipping $img as it already contains dimensions."
+    fi
+done

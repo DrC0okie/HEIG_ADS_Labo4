@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Default directory names
+default_src_dir="lab04_raw_files"
+default_dst_dir=$default_src_dir
+
+# Use the first script argument as the source directory, defaulting to default_src_dir if not provided
+src_dir="${1:-$default_src_dir}"
+
+# Use the second script argument as the destination directory for thumbnails, defaulting to default_dst_dir if not provided
+dst_dir="${2:-$default_dst_dir}"
+
+# Create the thumbnails directory if it doesn't exist
+mkdir -p "$thumbnails_dir"
+
+# Loop through JPEG, PNG, and PDF files in the source directory to create thumbnails
+for file in "$src_dir"/*.{jpg,png,pdf}; do
+    [ -e "$file" ] || continue  # Skip if no files found
+    base=$(basename "$file")
+    filename="${base%.*}"
+    extension="${base##*.}"
+
+    # Check if the file is already a thumbnail to avoid creating thumbnails of thumbnails
+    if ! [[ "$filename" =~ _thumb$ ]]; then
+        if [[ "$extension" == "pdf" ]]; then
+            # For PDFs, create a thumbnail of the first page
+            thumbnail="${dst_dir_dir}/${filename}_thumb.jpg"
+            convert -geometry 300 "${file}[0]" "$thumbnail"
+        else
+            # For images, create a thumbnail
+            thumbnail="${dst_dir_dir}/${filename}_thumb.${extension}"
+            convert -geometry 300 "$file" "$thumbnail"
+        fi
+        echo "Created thumbnail for $file"
+    else
+        echo "Skipping $file as it is already a thumbnail."
+    fi
+done

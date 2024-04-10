@@ -1,0 +1,10 @@
+#!/bin/bash
+
+raw_dir="lab04_raw_files"
+
+# Loop through JPEG and PNG files to display their dimensions
+for img in "$raw_dir"/*.{jpg,png}; do
+    [ -e "$img" ] || continue  # Skip if no files found
+    dimensions=$(identify -format 'width: %w, height: %h\n' "$img")
+    echo "$(basename "$img"): $dimensions"
+done
