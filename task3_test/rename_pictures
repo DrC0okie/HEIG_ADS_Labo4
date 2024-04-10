@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Check if ImageMagick is installed
+if ! command -v convert &> /dev/null; then
+    echo "ImageMagick is not installed. Please install it to continue."
+    exit 1
+fi
+
 # Default directory names
 default_src_dir="lab04_raw_files"
 default_dst_dir=$default_src_dir

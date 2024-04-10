@@ -1,0 +1,79 @@
+#!/bin/bash
+
+output_file="page.html"
+res_directory="files"
+src_dir="lab04_raw_files"
+template_begin="template_begin.html"
+template_middle="template_middle.html"
+template_end="template_end.html"
+
+# Rename pictures and copy them to the "files" directory
+./rename_pictures $src_dir $res_directory
+rename_exit_code=$?
+
+# Check if rename_pictures had an error
+if [ $rename_exit_code -ne 0 ]; then
+    echo "An error occurred in rename_pictures. Exiting..."
+    exit $rename_exit_code
+fi
+
+# Move PDF files from lab04_raw_files to the destination directory
+for pdf in $src_dir/*.pdf; do
+    [ -e "$pdf" ] || continue  # Skip if no files found
+    echo "Moving $pdf to $res_directory"
+    mv "$pdf" "$res_directory/"
+done
+
+# Create thumbnails for the pictures and pdf files in the "files" directory
+./make_thumbnails $res_directory $res_directory
+thumbnails_exit_code=$?
+
+if [ $thumbnails_exit_code -ne 0 ]; then
+    echo "An error occurred in make_thumbnails. Exiting..."
+    exit $thumbnails_exit_code
+fi
+
+# Ensure the middle content file is empty before starting
+> "$template_middle"
+
+# Step4: Start the HTML section for images
+echo -e "<article class=\"container article\">\n<div class=\"row\">\n<div class=\"col-md-10 col-md-pull-3 col-md-offset-4 article__content\">\n<div><div><h2>Découvrez-nous en images</h2></div></div>\n<div class=\"row\">" >> "$template_middle"
+
+# Loop through image thumbnails in the $res_directory
+for thumbnail in $res_directory/*_thumb.{jpg,png}; do
+    [ -e "$thumbnail" ] || continue  # Skip if no files found
+
+    # Exclude thumbnails that correspond to PDFs
+    if [ -f "${thumbnail%_thumb.*}.pdf" ]; then
+        continue
+    fi
+
+    # Construct the original image filename
+    original="${thumbnail%_thumb.*}.${thumbnail##*.}"
+
+    # Create HTML for the image thumbnail linking to the original image
+    echo -e "<div class=\"col-md-6 col-xs-12\">\n<a href=\"$original\"><img class=\"vignette\" src=\"$thumbnail\" /></a>\n</div>" >> "$template_middle"
+done
+
+# Close the section for images
+echo -e "</div>\n</div>\n</div>" >> "$template_middle"
+
+# Step5: Start the section for PDFs
+echo -e "<div class=\"row\" style=\"margin-top: 40px;\">\n<div class=\"col-md-10 col-md-pull-3 col-md-offset-4 article__content\">\n<div><div><h2>Téléchargez nos brochures</h2></div></div>\n<div class=\"row\">" >> "$template_middle"
+
+# Loop through PDF thumbnails in the $res_directory
+for thumbnail in $res_directory/*_thumb.jpg; do
+    [ -e "$thumbnail" ] || continue  # Skip if no files found
+
+    # Check if the thumbnail corresponds to a PDF file
+    if [ -f "${thumbnail%_thumb.jpg}.pdf" ]; then
+        # Create HTML for the PDF thumbnail linking to the PDF file
+        echo -e "<div class=\"col-md-6 col-xs-12\">\n<a href=\"$pdf\"><img class=\"vignette\" src=\"$thumbnail\" /></a>\n</div>" >> "$template_middle"
+    fi
+done
+
+# Close the section for PDFs
+echo -e "</div>\n</div>\n</div>\n</article>\n" >> "$template_middle"
+
+# Concat the beginning, middle and end template, then write to the page.html file
+cat "$template_begin" "$template_middle" "$template_end" > "$output_file"
