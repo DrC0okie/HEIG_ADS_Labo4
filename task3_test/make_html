@@ -1,14 +1,14 @@
 #!/bin/bash
 
 output_file="page.html"
-res_directory="files"
 src_dir="lab04_raw_files"
+thumb_dir="thumbnails"
 template_begin="template_begin.html"
 template_middle="template_middle.html"
 template_end="template_end.html"
 
 # Rename pictures and copy them to the "files" directory
-./rename_pictures $src_dir $res_directory
+./rename_pictures
 rename_exit_code=$?
 
 # Check if rename_pictures had an error
@@ -17,24 +17,8 @@ if [ $rename_exit_code -ne 0 ]; then
     exit $rename_exit_code
 fi
 
-# Copy PDF files from source to destination directory if they don't already exist there
-for pdf in "$src_dir"/*.pdf; do
-    [ -e "$pdf" ] || continue  # Skip if no files found
-
-    pdf_filename=$(basename "$pdf")
-    destination_pdf="$res_directory/$pdf_filename"
-
-    if [ -e "$destination_pdf" ]; then
-        echo "$pdf_filename already exists in $res_directory, skipping copy."
-        continue
-    fi
-
-    echo "Copying $pdf to $res_directory"
-    cp "$pdf" "$destination_pdf"
-done
-
 # Create thumbnails for the pictures and pdf files in the "files" directory
-./make_thumbnails $res_directory $res_directory
+./make_thumbnails
 thumbnails_exit_code=$?
 
 if [ $thumbnails_exit_code -ne 0 ]; then
@@ -45,39 +29,32 @@ fi
 # Ensure the middle content file is empty before starting
 > "$template_middle"
 
-# Step4: Start the HTML section for images
+# Start the HTML section for images
 echo -e "<article class=\"container article\">\n<div class=\"row\">\n<div class=\"col-md-10 col-md-pull-3 col-md-offset-4 article__content\">\n<div><div><h2>Découvrez-nous en images</h2></div></div>\n<div class=\"row\">" >> "$template_middle"
 
-# Loop through image thumbnails in the $res_directory
-for thumbnail in $res_directory/*_thumb.{jpg,png}; do
-    [ -e "$thumbnail" ] || continue  # Skip if no files found
-
-    # Exclude thumbnails that correspond to PDFs
-    if [ -f "${thumbnail%_thumb.*}.pdf" ]; then
-        continue
+# Loop through the source directory images
+for file in "$src_dir"/*.{jpg,png}; do
+    filename=$(basename "$file")
+    thumbnail="${thumb_dir}/${filename%.*}_thumb.${filename##*.}"
+    if [ -e "$thumbnail" ]; then
+        echo -e "<div class=\"col-md-6 col-xs-12\">\n<a href=\"$file\"><img class=\"vignette\" src=\"$thumbnail\" /></a>\n</div>" >> "$template_middle"
     fi
-
-    # Construct the original image filename
-    original="${thumbnail%_thumb.*}.${thumbnail##*.}"
-
-    # Create HTML for the image thumbnail linking to the original image
-    echo -e "<div class=\"col-md-6 col-xs-12\">\n<a href=\"$original\"><img class=\"vignette\" src=\"$thumbnail\" /></a>\n</div>" >> "$template_middle"
 done
 
 # Close the section for images
 echo -e "</div>\n</div>\n</div>" >> "$template_middle"
 
-# Step5: Start the section for PDFs
+# Start the section for PDFs
 echo -e "<div class=\"row\" style=\"margin-top: 40px;\">\n<div class=\"col-md-10 col-md-pull-3 col-md-offset-4 article__content\">\n<div><div><h2>Téléchargez nos brochures</h2></div></div>\n<div class=\"row\">" >> "$template_middle"
 
-# Loop through PDF thumbnails in the $res_directory
-for thumbnail in $res_directory/*_thumb.jpg; do
-    [ -e "$thumbnail" ] || continue  # Skip if no files found
-
+# Loop through PDF thumbnails
+for file in "$thumb_dir"/*_thumb.*; do
+    filename=$(basename "$file")
+    pdf="${src_dir}/${filename%_thumb.png}.pdf"
     # Check if the thumbnail corresponds to a PDF file
-    if [ -f "${thumbnail%_thumb.jpg}.pdf" ]; then
+    if [ -e "$pdf" ]; then
         # Create HTML for the PDF thumbnail linking to the PDF file
-        echo -e "<div class=\"col-md-6 col-xs-12\">\n<a href=\"$pdf\"><img class=\"vignette\" src=\"$thumbnail\" /></a>\n</div>" >> "$template_middle"
+        echo -e "<div class=\"col-md-6 col-xs-12\">\n<a href=\"$pdf\"><img class=\"vignette\" src=\"$file\" /></a>\n</div>" >> "$template_middle"
     fi
 done
 
