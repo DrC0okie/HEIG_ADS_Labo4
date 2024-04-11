@@ -8,6 +8,8 @@ fi
 
 # Set the source and destination directories relative to this script
 src_dir="lab04_raw_files"
+
+# We send the thumnail to another directory, avoiding making thumbnails from thumbnails
 dst_dir="thumbnails"
 
 # Create the destination directory if it doesn't exist
@@ -28,14 +30,14 @@ for img in "$src_dir"/*.{jpg,png}; do
     echo "Created thumbnail for image at $thumbnail"
 done
 
-# Loop through PDF files to create thumbnails, using jpg as the thumbnail extension
+# Loop through PDF files to create thumbnails, using png as the thumbnail extension
 for pdf in "$src_dir"/*.pdf; do
     [ -e "$pdf" ] || continue  # Skip if no files found
     base=$(basename "$pdf")
     filename="${base%.*}"
 
     # Define the thumbnail filename for PDF, using jpg as the extension
-    thumbnail="${dst_dir}/${filename}_thumb.jpg"
+    thumbnail="${dst_dir}/${filename}_thumb.png"
 
     # Create a thumbnail for the first page of the PDF
     convert -geometry 300 "${pdf}[0]" "$thumbnail"

@@ -20,14 +20,16 @@ fi
 > "$template_middle"
 
 # Start the HTML section for images
-echo -e "<article class=\"container article\">\n<div class=\"row\">\n<div class=\"col-md-10 col-md-pull-3 col-md-offset-4 article__content\">\n<div><div><h2>Découvrez-nous en images</h2></div></div>\n<div class=\"row\">" >> "$template_middle"
+echo -e "<article class=\"container article\">\n<div class=\"row\">\n<div class=\"col-md-10 col-md-pull-3 col-md-off"\
+"set-4 article__content\">\n<div><div><h2>Découvrez-nous en images</h2></div></div>\n<div class=\"row\">" >> "$template_middle"
 
 # Loop through the source directory images
 for file in "$src_dir"/*.{jpg,png}; do
     filename=$(basename "$file")
     thumbnail="${thumb_dir}/${filename%.*}_thumb.${filename##*.}"
     if [ -e "$thumbnail" ]; then
-        echo -e "<div class=\"col-md-6 col-xs-12\">\n<a href=\"$file\"><img class=\"vignette\" src=\"$thumbnail\" /></a>\n</div>" >> "$template_middle"
+        echo -e "<div class=\"col-md-6 col-xs-12\">\n<a href=\"$file\"><img class=\"vignette\" src=\"$thumbnail\" />"\
+"</a>\n</div>" >> "$template_middle"
     fi
 done
 
@@ -35,7 +37,8 @@ done
 echo -e "</div>\n</div>\n</div>" >> "$template_middle"
 
 # Start the section for PDFs
-echo -e "<div class=\"row\" style=\"margin-top: 40px;\">\n<div class=\"col-md-10 col-md-pull-3 col-md-offset-4 article__content\">\n<div><div><h2>Téléchargez nos brochures</h2></div></div>\n<div class=\"row\">" >> "$template_middle"
+echo -e "<div class=\"row\" style=\"margin-top: 40px;\">\n<div class=\"col-md-10 col-md-pull-3 col-md-offset-4 article"\
+"__content\">\n<div><div><h2>Téléchargez nos brochures</h2></div></div>\n<div class=\"row\">" >> "$template_middle"
 
 # Loop through PDF thumbnails
 for file in "$thumb_dir"/*_thumb.*; do
@@ -44,7 +47,8 @@ for file in "$thumb_dir"/*_thumb.*; do
     # Check if the thumbnail corresponds to a PDF file
     if [ -e "$pdf" ]; then
         # Create HTML for the PDF thumbnail linking to the PDF file
-        echo -e "<div class=\"col-md-6 col-xs-12\">\n<a href=\"$pdf\"><img class=\"vignette\" src=\"$file\" /></a>\n</div>" >> "$template_middle"
+        echo -e "<div class=\"col-md-6 col-xs-12\">\n<a href=\"$pdf\"><img class=\"vignette\" src=\"$file\" /></a>\n</"\
+"div>" >> "$template_middle"
     fi
 done
 
@@ -55,3 +59,5 @@ echo -e "</div>\n</div>\n</div>\n</article>\n" >> "$template_middle"
 cat "$template_begin" "$template_middle" "$template_end" > "$output_file"
 
 rm "$template_middle"
+
+echo "HTML page created successfully."
