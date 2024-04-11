@@ -13,19 +13,31 @@ dst_dir="thumbnails"
 # Create the destination directory if it doesn't exist
 mkdir -p "$dst_dir"
 
-# Loop through JPG, PNG, and PDF files to create thumbnails
-for file in "$src_dir"/*.{jpg,png,pdf}; do
-    [ -e "$file" ] || continue  # Skip if no files found
-    base=$(basename "$file")
+# Loop through JPG and PNG files to create thumbnails
+for img in "$src_dir"/*.{jpg,png}; do
+    [ -e "$img" ] || continue  # Skip if no files found
+    base=$(basename "$img")
     filename="${base%.*}"
     extension="${base##*.}"
 
-    # Define the thumbnail filename
-    thumbnail="${dst_dir}/${filename}_thumb.png"
+    # Define the thumbnail filename, preserving the original extension
+    thumbnail="${dst_dir}/${filename}_thumb.${extension}"
 
-    # Create a thumbnail for the file
-    # For PDFs, this will create a thumbnail of the first page
-    # For images, this will create a thumbnail of the image itself
-    convert -geometry 300 "${file}[0]" "$thumbnail"  # '[0]' is harmless for img but needed for pdf
-    echo "Created thumbnail at $thumbnail"
+    # Create a thumbnail for the image
+    convert -geometry 300 "$img" "$thumbnail"
+    echo "Created thumbnail for image at $thumbnail"
+done
+
+# Loop through PDF files to create thumbnails, using jpg as the thumbnail extension
+for pdf in "$src_dir"/*.pdf; do
+    [ -e "$pdf" ] || continue  # Skip if no files found
+    base=$(basename "$pdf")
+    filename="${base%.*}"
+
+    # Define the thumbnail filename for PDF, using jpg as the extension
+    thumbnail="${dst_dir}/${filename}_thumb.jpg"
+
+    # Create a thumbnail for the first page of the PDF
+    convert -geometry 300 "${pdf}[0]" "$thumbnail"
+    echo "Created thumbnail for PDF at $thumbnail"
 done

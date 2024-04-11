@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Chemin vers le répertoire contenant les images
+DIRECTORY="./lab04_raw_files"
+
+# Extensions de fichiers à traiter
+declare -a EXTENSIONS=("jpg" "jpeg" "png")
+
+# Boucle à travers tous les fichiers dans le répertoire
+for IMAGE in "$DIRECTORY"/*; do
+    if [[ -f "$IMAGE" ]]; then
+        FILENAME=$(basename -- "$IMAGE")
+        EXTENSION="${FILENAME##*.}"
+        BASENAME="${FILENAME%.*}"
+
+        # Vérifie si l'extension du fichier est dans la liste des extensions à traiter
+        if [[ " ${EXTENSIONS[@]} " =~ " ${EXTENSION,,} " ]]; then
+            # Vérifie si le nom du fichier contient déjà des dimensions à l'aide d'une expression régulière
+            if ! [[ "$FILENAME" =~ _[0-9]+_[0-9]+\.$EXTENSION$ ]]; then
+                # Extraction des dimensions de l'image
+                DIMENSIONS=$(identify -format "%w_%h" "$IMAGE" 2>/dev/null)
+
+                # Construction du nouveau nom de fichier avec les dimensions
+                NEW_FILENAME="${DIRECTORY}/${BASENAME}_${DIMENSIONS}.${EXTENSION}"
+
+                # Copie le fichier original vers un nouveau fichier avec le nom modifié
+                cp "$IMAGE" "$NEW_FILENAME"
+                echo "Fichier créé : $NEW_FILENAME"
+            else
+                echo "Le fichier $FILENAME contient déjà des dimensions dans son nom."
+            fi
+        else
+            echo "Le fichier $FILENAME est ignoré car son extension n'indique pas une image."
+        fi
+    fi
+done

@@ -7,16 +7,6 @@ template_begin="template_begin.html"
 template_middle="template_middle.html"
 template_end="template_end.html"
 
-# Rename pictures and copy them to the "files" directory
-./rename_pictures
-rename_exit_code=$?
-
-# Check if rename_pictures had an error
-if [ $rename_exit_code -ne 0 ]; then
-    echo "An error occurred in rename_pictures. Exiting..."
-    exit $rename_exit_code
-fi
-
 # Create thumbnails for the pictures and pdf files in the "files" directory
 ./make_thumbnails
 thumbnails_exit_code=$?
@@ -63,3 +53,5 @@ echo -e "</div>\n</div>\n</div>\n</article>\n" >> "$template_middle"
 
 # Concat the beginning, middle and end template, then write to the page.html file
 cat "$template_begin" "$template_middle" "$template_end" > "$output_file"
+
+rm "$template_middle"
