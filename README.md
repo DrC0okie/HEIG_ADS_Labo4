@@ -494,18 +494,19 @@ HTML page created successfully.
 >
 > 1. Edit the page index.php with your username and MariaDB password. To avoid conflict with index.html, you can rename index.php to something.php
 
-// todo
+It was renamed to part4.php
 
 > 2. Install locally (not on the server) a database management tool Hint: snap install mysql-workbench-community , you may have to allow access to password storage from Ubuntu software
 
-// todo
-
 > 3. Use SSH to redirect remote port 3306 to a local on, you can choose any port number above 1024 .
 
-// todo
 
 > 4. Connect database management tool to the database. Display the menu table and perform some modifications that should be visible when you refresh the index.php page in your browser.
 >
 >    **Deliverable: the SSH command you use and a screenshot of the database management toolshowing the database**
 
-// todo
+The SSH command used was:
+`ssh -L 3307:localhost:3306 labc@ads.iict.ch`
+
+Here's the screenshot of mysql-workbench:
+![](./figures/mysql.jpg)
